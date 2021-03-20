@@ -35,7 +35,7 @@ public class MyKeyListener implements NativeKeyListener {
     private String getSelectedText() {
         try {
             performCopyAction();
-            Thread.sleep(1); //added to give enough time for the copy action to be finished.
+            Thread.sleep(20); //added to give enough time for the copy action to be finished.
             return getTextFromClipboard();
         } catch (AWTException | UnsupportedFlavorException | IOException | InterruptedException e) {
             System.out.println("yup error happened idk what why.");

@@ -13,6 +13,7 @@ public class MainRunner {
         removeLoggingMessages();
         registerNativeHook();
         GlobalScreen.addNativeKeyListener(new MyKeyListener());
+        System.out.println("Listening..");
 
     }
 

@@ -3,8 +3,15 @@ package com.hussein.company.utilties;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import java.io.IOException;
+
 public class TranslateOnChrome {
     static {
+        try {
+            Runtime.getRuntime().exec("taskkill /F /IM chromedriver.exe /T");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         System.setProperty("webdriver.chrome.driver", "D:\\Users\\user\\IdeaProjects\\TranslateAnyText\\src\\main\\resources\\chromedriver.exe");
     }
 
