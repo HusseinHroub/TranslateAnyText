@@ -1,5 +1,6 @@
 package com.hussein.company.listeners;
 
+import com.hussein.company.utilties.DriverCleanupUtil;
 import com.hussein.company.utilties.KeyPressUtils;
 import com.hussein.company.utilties.TranslateOnChrome;
 import org.jnativehook.keyboard.NativeKeyEvent;
@@ -16,12 +17,25 @@ public class MyKeyListener implements NativeKeyListener {
 
     private static final String CONTROL_STRING = "Ctrl";
 
+    public MyKeyListener() {
+        try {
+            DriverCleanupUtil.killRunningChromeDrivers();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void nativeKeyTyped(NativeKeyEvent e) {
     }
 
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
+
+    }
+
+    @Override
+    public void nativeKeyReleased(NativeKeyEvent e) {
         if (CONTROL_STRING.equals(NativeKeyEvent.getKeyText(e.getKeyCode()))) {
             if (KeyPressUtils.isDoublePressed(e.getKeyCode())) {
                 TranslateOnChrome.translate(getSelectedText());
@@ -56,7 +70,7 @@ public class MyKeyListener implements NativeKeyListener {
         robot.keyRelease(KeyEvent.VK_CONTROL);
     }
 
-    @Override
-    public void nativeKeyReleased(NativeKeyEvent e) {
+    public void cleanUp() throws IOException {
+        DriverCleanupUtil.killRunningChromeDrivers();
     }
 }
