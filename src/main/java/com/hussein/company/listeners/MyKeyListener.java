@@ -1,5 +1,6 @@
 package com.hussein.company.listeners;
 
+import com.hussein.company.utilties.Common;
 import com.hussein.company.utilties.DriverCleanupUtil;
 import com.hussein.company.utilties.KeyPressUtils;
 import com.hussein.company.utilties.TranslateOnChrome;
@@ -14,9 +15,9 @@ import java.awt.event.KeyEvent;
 import java.io.IOException;
 
 public class MyKeyListener implements NativeKeyListener {
-
-    private static final String CONTROL_STRING = "Ctrl";
-
+    
+    private static final int CONTROL_CODE = 29;
+    
     public MyKeyListener() {
         try {
             DriverCleanupUtil.killRunningChromeDrivers();
@@ -24,19 +25,19 @@ public class MyKeyListener implements NativeKeyListener {
             e.printStackTrace();
         }
     }
-
+    
     @Override
     public void nativeKeyTyped(NativeKeyEvent e) {
     }
-
+    
     @Override
     public void nativeKeyPressed(NativeKeyEvent e) {
-
+    
     }
-
+    
     @Override
     public void nativeKeyReleased(NativeKeyEvent e) {
-        if (CONTROL_STRING.equals(NativeKeyEvent.getKeyText(e.getKeyCode()))) {
+        if (CONTROL_CODE == e.getKeyCode()) {
             if (KeyPressUtils.isDoublePressed(e.getKeyCode())) {
                 TranslateOnChrome.translate(getSelectedText());
             }
@@ -45,7 +46,7 @@ public class MyKeyListener implements NativeKeyListener {
             KeyPressUtils.clearMapContent();
         }
     }
-
+    
     private String getSelectedText() {
         try {
             performCopyAction();
@@ -56,20 +57,27 @@ public class MyKeyListener implements NativeKeyListener {
         }
         return null;
     }
-
+    
     private String getTextFromClipboard() throws UnsupportedFlavorException, IOException {
         Clipboard c = Toolkit.getDefaultToolkit().getSystemClipboard();
         return (String) c.getData(DataFlavor.stringFlavor);
     }
-
+    
     private void performCopyAction() throws AWTException {
         Robot robot = new Robot();
-        robot.keyPress(KeyEvent.VK_CONTROL);
-        robot.keyPress(KeyEvent.VK_C);
-        robot.keyRelease(KeyEvent.VK_C);
-        robot.keyRelease(KeyEvent.VK_CONTROL);
+        if (Common.IS_WINDOWS) {
+            robot.keyPress(KeyEvent.VK_CONTROL);
+            robot.keyPress(KeyEvent.VK_C);
+            robot.keyRelease(KeyEvent.VK_C);
+            robot.keyRelease(KeyEvent.VK_CONTROL);
+        } else {
+            robot.keyPress(KeyEvent.VK_META);
+            robot.keyPress(KeyEvent.VK_C);
+            robot.keyRelease(KeyEvent.VK_C);
+            robot.keyRelease(KeyEvent.VK_META);
+        }
     }
-
+    
     public void cleanUp() throws IOException {
         DriverCleanupUtil.killRunningChromeDrivers();
     }
