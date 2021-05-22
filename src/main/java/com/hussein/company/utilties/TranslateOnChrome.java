@@ -1,12 +1,34 @@
 package com.hussein.company.utilties;
 
+import com.hussein.company.MainRunner;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.io.File;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.file.Paths;
 
 public class TranslateOnChrome {
 
     static {
-        System.setProperty("webdriver.chrome.driver", "D:\\Users\\user\\IdeaProjects\\TranslateAnyText\\src\\main\\resources\\chromedriver.exe");
+        if (System.getProperty("os.name").toLowerCase().contains("windows")) {
+            System.setProperty("webdriver.chrome.driver", getFullFilePathFromResources("chromedriver.exe"));
+        } else {
+            getFullFilePathFromResources("chromedriver_mac");
+        }
+
+    }
+
+    private static String getFullFilePathFromResources(String fileRelativePath) {
+        URL res = MainRunner.class.getClassLoader().getResource(fileRelativePath);
+        try {
+            File file = Paths.get(res.toURI()).toFile();
+            return file.getAbsolutePath();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        throw new RuntimeException("Couldn't find chrome driver path for this fileRelative: " + fileRelativePath);
     }
 
     private final static WebDriver driver = new ChromeDriver();
